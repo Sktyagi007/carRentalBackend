@@ -4,6 +4,8 @@ const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const config = require("./config");
 const vehicleRoute = require("./routes/cars");
+const reservationRoute = require("./routes/reservation");
+const userRoute = require("./routes/user");
 
 const app = express();
 mongoose.set("strictQuery", false);
@@ -22,3 +24,5 @@ app.use(cors());
 
 // app.use("/",defaultRoute);
 app.use("/app/v1/vehicles",vehicleRoute);
+app.use("/app/v1/reservation",reservationRoute);
+app.use("/app/v1/user",userRoute);

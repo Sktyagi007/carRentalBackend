@@ -2,12 +2,10 @@ const mongoose = require('mongoose');
 
 const imageSchema = new mongoose.Schema({
   src: String,
-  back: String,
-  side: String,
 });
 
 const carSchema = new mongoose.Schema({
-  id: Number,
+  vehicleID: Number,
   image: [imageSchema],
   type: String,
   title: String,
@@ -23,8 +21,8 @@ const carSchema = new mongoose.Schema({
 const rentalSchema = new mongoose.Schema({
   self: [carSchema],
   chauffer: [carSchema],
-});
+},{versionKey:false});
 
-const vehiclesModel = mongoose.model('Master Cars', rentalSchema);
+const vehiclesModel = mongoose.model('master cars', rentalSchema);
 
 module.exports = vehiclesModel;

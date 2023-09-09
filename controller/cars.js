@@ -1,24 +1,23 @@
 const { default: mongoose } = require("mongoose");
-const vehicleModel = require("../models/cars");
 const reservationTypeModel = require("../models/reservationType");
+
+const vehicleModel = require("../models/cars")
 
 exports.getSelfVehicles = async (req,res)=>{
     let data = req.body;
     console.log(data);
     try {
-        let reservationType = data["reservation type"];
-        console.log(reservationType);
-
-        let query = { [`${reservationType}`]: { $exists: true } };
-        console.log(query);
-
-        await reservationTypeModel.findOne(query).then((response)=>{
-            console.log(response);
+        
+        await vehicleModel.find({},{"self":1}).then((response)=>{
+            console.log(response[0].self);
+            res.status(200).send({
+                result:response[0].self
+            })
         }).catch((err)=>{
             console.log(err);
         })
-        
-        
+    
+
     } catch (error) {
         console.log(error);
     }
@@ -28,9 +27,14 @@ exports.getchaufferVehicles = async (req,res)=>{
     let data = req.body;
     console.log(data);
     try {
-        let query = {
-            drivenType : data.drivenType
-        }
+        await vehicleModel.find({},{"chauffer":1}).then((response)=>{
+            console.log(response[0].chauffer);
+            res.status(200).send({
+                result:response[0].chauffer
+            })
+        }).catch((err)=>{
+            console.log(err);
+        });
         
     } catch (error) {
         
@@ -86,3 +90,39 @@ exports.addChaufferVehicles = async (req,res)=>{
         })
     }
 }
+
+
+
+exports.creatSelfAndChaufferVehicle = async (req,res)=>{
+    let data = req.body;
+    console.log(data);
+    try {
+        let vehicle = await vehicleModel.exists(data);
+        if(vehicle){
+            res.status(200).json({
+                selfExists:true,
+                selfCreated:false
+            })
+        }else{
+            await vehicleModel.create(data).then(()=>{
+                res.status(200).json({
+                    selfExists:false,
+                    selfCreated:true
+                })
+            }).catch((err)=>{
+                console.log(err);
+                res.status(200).json({
+                    selfExists:false,
+                    selfCreated:false
+                })
+            })
+        }
+        
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            result:"api failure"
+        })
+    }
+}
+
